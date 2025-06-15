@@ -6,7 +6,7 @@ O projeto foi desenvolvido com as tecnologias:
 - PostgreSQL;
 - Composer;
 
-Caso utilize o Docker, é necessário ter instalado apenas o Docker e Docker Compose.
+Caso utilize o Docker, é necessário ter instalado o Docker e Docker Compose.
 
 ### Instalação
 
@@ -78,38 +78,54 @@ Todos os endpoints abaixo exigem o header `X-API-KEY` com o valor do `APP_KEY` g
 
 ### Obter detalhes de um lugar por ID
 **GET** `/api/places/{id}`
-> Substitua `{id}` pelo Id do lugar desejado.
+> Substitua `{id}` pelo Id do lugar que deseja obter detalhes.
 
 ### Criar um novo lugar
 **POST** `/api/places`
 - Body (JSON):  
-    O campo `"name"` é obrigatório.
-        ```json
-        {
-                "name": "Nome do lugar", // obrigatório
-                "description": "Descrição do lugar",
-                "address": "Endereço do lugar",
-                "city": "Cidade",
-                "state": "Estado",
-                "country": "País"
-        }
-        ```
+    - `"name"` (string, obrigatório): Nome do lugar.
+    - `"description"` (string, opcional): Descrição detalhada do lugar.
+    - `"address"` (string, opcional): Endereço completo do local.
+    - `"city"` (string, opcional): Cidade onde o lugar está localizado.
+    - `"state"` (string, opcional): Estado correspondente.
+    - `"country"` (string, opcional): País de localização.
+
+    Exemplo de payload:
+    ```json
+    {
+        "name": "Nome do lugar",
+        "description": "Descrição do lugar",
+        "address": "Endereço do lugar",
+        "city": "Cidade",
+        "state": "Estado",
+        "country": "País"
+    }
+    ```
 
 ### Atualizar um lugar existente
 **PUT/PATCH** `/api/places/{id}`
 - Body (JSON):  
-    O campo `"name"` é obrigatório.
-        ```json
-        {
-                "name": "Nome do lugar", // obrigatório
-                "description": "Descrição do lugar",
-                "address": "Endereço do lugar",
-                "city": "Cidade",
-                "state": "Estado",
-                "country": "País"
-        }
-        ```
+    - `"name"` (string, obrigatório): Nome do lugar.
+    - `"description"` (string, opcional): Descrição detalhada do lugar.
+    - `"address"` (string, opcional): Endereço completo do local.
+    - `"city"` (string, opcional): Cidade onde o lugar está localizado.
+    - `"state"` (string, opcional): Estado correspondente.
+    - `"country"` (string, opcional): País de localização.
+
+    Exemplo de payload:
+    ```json
+    {
+        "name": "Nome do lugar",
+        "description": "Descrição do lugar",
+        "address": "Endereço do lugar",
+        "city": "Cidade",
+        "state": "Estado",
+        "country": "País"
+    }
+    ```
+> Substitua `{id}` pelo Id do lugar que deseja atualizar.
+
 
 ### Remover um lugar
 **DELETE** `/api/places/{id}`
-> Substitua `{id}` pelo Id do lugar desejado.
+> Substitua `{id}` pelo Id do lugar que deseja remover.
