@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Domain\Places\Services\PlaceService;
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
-class PlaceController extends Controller
+class PlaceController extends AbstractController
 {
     protected $service;
 
@@ -15,59 +16,40 @@ class PlaceController extends Controller
         $this->service = $service;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:places,slug',
+            'country' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'city' => 'nullable|string|max:100',
+        ]);
+
+        // Generate slug from name if not provided
+        if (!$request->has('slug') || empty($request->slug)) {
+            $request->merge(['slug' => Str::slug($request->name)]);
+        }
+
+        return response()->json($this->service->create($request->all()));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Place $place)
+    public function update(Request $request, int $id)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:places,slug',
+            'country' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'city' => 'nullable|string|max:100',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Place $place)
-    {
-        //
-    }
+        // Generate slug from name if name is provided and slug is not
+        if ($request->has('name') && (!$request->has('slug') || empty($request->slug))) {
+            $request->merge(['slug' => Str::slug($request->name)]);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Place $place)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Place $place)
-    {
-        //
+        return response()->json($this->service->update($id, $request->all()));
     }
 }

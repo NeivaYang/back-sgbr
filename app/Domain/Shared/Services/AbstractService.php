@@ -48,11 +48,6 @@ abstract class AbstractService
         return $this->repository->delete($id);
     }
 
-    public function paginate(int $perPage = 15)
-    {
-        return $this->repository->paginate($perPage);
-    }
-
     public function search(string $data)
     {
         return $this->repository->search($data);

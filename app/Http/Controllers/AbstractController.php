@@ -3,68 +3,59 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 
-abstract class AbstractController
+abstract class AbstractController extends Controller
 {
     protected $service;
-    protected string $viewPath;
 
-    public function __construct($service, string $viewPath)
+    public function __construct($service)
     {
         $this->service = $service;
-        $this->viewPath = $viewPath;
     }
 
     public function index()
     {
-        $data = $this->service->paginate(15);
-
-        return View::make("{$this->viewPath}.index", compact('data'));
-    }
-
-    public function create()
-    {
-        return View::make("{$this->viewPath}.create");
+        return response()->json($this->service->listAll());
     }
 
     public function store(Request $request)
     {
-        $this->service->create($request->all());
-
-        return redirect()->route("{$this->viewPath}.index")->with('success', 'Registro criado com sucesso!');
-    }
-
-    public function edit(int $id)
-    {
-        $record = $this->service->findById($id);
-
-        return View::make("{$this->viewPath}.edit", compact('record'));
+        return response()->json($this->service->create($request->all()));
     }
 
     public function update(Request $request, int $id)
     {
-        $this->service->update($id, $request->all());
-
-        return redirect()->route("{$this->viewPath}.index")->with('success', 'Registro atualizado com sucesso!');
+        return response()->json($this->service->update($id, $request->all()));
     }
 
     public function destroy(int $id)
     {
-        $this->service->delete($id);
+        $res = $this->service->delete($id);
 
-        return redirect()->route("{$this->viewPath}.index")->with('success', 'Registro excluído com sucesso!');
+        if (!$res) {
+            return response()->json(['message' => 'Erro ao deletar o registro'], 500);
+        }
+
+        return response()->json(['message' => 'Registro deletado com sucesso'], 200);
+    }
+
+    public function findById(int $id)
+    {
+        $record = $this->service->findById($id);
+
+        if (!$record) {
+            return response()->json(['message' => 'Registro não encontrado'], 404);
+        }
+
+        return response()->json($record);
     }
 
     public function search(Request $request)
     {
-        if (!$request->value) {
+        $query = $request->query('query');
+        if (!$query) {
             return $this->index();
         }
-        $data = $this->service->search($request->value);
-        return response()->json([
-            'data' => $data->items(),
-            'links' => $data->appends(['value' => $request->value])->links('pagination::tailwind')->toHtml()
-        ]);
+        return response()->json($this->service->search($query));
     }
 }

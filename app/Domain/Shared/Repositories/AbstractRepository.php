@@ -46,14 +46,8 @@ abstract class AbstractRepository
         return $model ? $model->delete() : false;
     }
 
-    public function paginate(int $perPage = 15)
-    {
-        return $this->model->paginate($perPage);
-    }
-
     public function search(string $data)
     {
-        return $this->model->where('name', 'like', "%$data%")
-            ->paginate(15);
+        return $this->model->where('name', 'like', "%$data%")->get();
     }
 }
